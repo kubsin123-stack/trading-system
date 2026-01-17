@@ -1,3 +1,12 @@
+===== UI MODE SWITCH =====
+st.sidebar.title("UI Mode")
+ui_mode = st.sidebar.radio(
+    "Choose mode",
+    ["Mobile", "Desktop"],
+    index=0
+)
+is_mobile = ui_mode == "Mobile"
+=========================
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -43,6 +52,32 @@ trend_ok = (float(latest["EMA144"]) < float(latest["EMA55"])) and (float(latest[
 macd_ok = float(latest["MACD"]) > float(latest["MACD_signal"])
 kdj_ok = float(latest["K"]) > float(latest["D"])
 
+if is_mobile:
+    # ===== Mobile Version =====
+    st.markdown("## 📊 STATUS")
+    if trend_ok:
+        st.success("TREND OK")
+    else:
+        st.error("NO TRADE")
+
+    st.markdown("## 🎯 R LEVELS")
+    st.markdown(f"1R: {r1:.2f}")
+    st.markdown(f"2R: {r2:.2f}")
+    st.markdown(f"3R: {r3:.2f}")
+
+    st.markdown("## 🧠 ACTION")
+    if not trend_ok:
+        st.error("NO TRADE")
+    elif current_price >= r3:
+        st.warning("REDUCE / TAKE PROFIT")
+    elif current_price >= r2:
+        st.info("MOVE STOP TO BREAKEVEN")
+    elif current_price >= r1:
+        st.success("ADD POSITION")
+    else:
+        st.info("WAIT")
+
+else:
 st.subheader("Market status")
 
 c1, c2, c3 = st.columns(3)
