@@ -65,26 +65,29 @@ if entry_price > 0 and stop_price > 0 and entry_price != stop_price:
 # ========================
 
 if is_mobile:
-st.markdown("## 📊 STATUS")
-st.success("TREND OK") if trend_ok else st.error("NO TRADE")
+    st.markdown("## 📊 STATUS")
+    if trend_ok:
+        st.success("TREND OK")
+    else:
+        st.error("NO TRADE")
 
-if r1 is not None:
-st.markdown("## 🎯 R LEVELS")
-st.markdown(f"**1R:** {r1:.2f}")
-st.markdown(f"**2R:** {r2:.2f}")
-st.markdown(f"**3R:** {r3:.2f}")
+    if r1 is not None:
+        st.markdown("## 🎯 R LEVELS")
+        st.markdown(f"1R: {r1:.2f}")
+        st.markdown(f"2R: {r2:.2f}")
+        st.markdown(f"3R: {r3:.2f}")
 
-st.markdown("## 🧠 ACTION")
-if not trend_ok:
-st.error("NO TRADE")
-elif current_price >= r3:
-st.warning("REDUCE / TAKE PROFIT")
-elif current_price >= r2:
-st.info("MOVE STOP TO BREAKEVEN")
-elif current_price >= r1:
-st.success("ADD POSITION")
-else:
-st.info("WAIT")
+        st.markdown("## 🧠 ACTION")
+        if not trend_ok:
+            st.error("NO TRADE")
+        elif current_price >= r3:
+            st.warning("REDUCE / TAKE PROFIT")
+        elif current_price >= r2:
+            st.info("MOVE STOP TO BREAKEVEN")
+        elif current_price >= r1:
+            st.success("ADD POSITION")
+        else:
+            st.info("WAIT")
 
 else:
 st.subheader("Market status")
