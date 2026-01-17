@@ -1,4 +1,10 @@
-===== UI MODE SWITCH =====
+import streamlit as st
+import pandas as pd
+import numpy as np
+import datetime
+import yfinance as yf
+
+#===== UI MODE SWITCH =====
 st.sidebar.title("UI Mode")
 ui_mode = st.sidebar.radio(
     "Choose mode",
@@ -6,13 +12,7 @@ ui_mode = st.sidebar.radio(
     index=0
 )
 is_mobile = ui_mode == "Mobile"
-=========================
-import streamlit as st
-import pandas as pd
-import numpy as np
-import datetime
-import yfinance as yf
-
+#=========================
 st.set_page_config(page_title="Trading Decision System - Phase 2", layout="wide")
 st.title("Trading Decision System - Phase 2")
 
@@ -40,7 +40,6 @@ ema_fast = df["Close"].ewm(span=12).mean()
 ema_slow = df["Close"].ewm(span=26).mean()
 df["MACD"] = ema_fast - ema_slow
 df["MACD_signal"] = df["MACD"].ewm(span=9).mean()
-
 low_min = df["Low"].rolling(9).min()
 high_max = df["High"].rolling(9).max()
 df["K"] = (df["Close"] - low_min) / (high_max - low_min) * 100
@@ -52,61 +51,58 @@ trend_ok = (float(latest["EMA144"]) < float(latest["EMA55"])) and (float(latest[
 macd_ok = float(latest["MACD"]) > float(latest["MACD_signal"])
 kdj_ok = float(latest["K"]) > float(latest["D"])
 
-if is_mobile:
-    # ===== Mobile Version =====
-    st.markdown("## 📊 STATUS")
-    if trend_ok:
-        st.success("TREND OK")
-    else:
-        st.error("NO TRADE")
-
-    st.markdown("## 🎯 R LEVELS")
-    st.markdown(f"1R: {r1:.2f}")
-    st.markdown(f"2R: {r2:.2f}")
-    st.markdown(f"3R: {r3:.2f}")
-
-    st.markdown("## 🧠 ACTION")
-    if not trend_ok:
-        st.error("NO TRADE")
-    elif current_price >= r3:
-        st.warning("REDUCE / TAKE PROFIT")
-    elif current_price >= r2:
-        st.info("MOVE STOP TO BREAKEVEN")
-    elif current_price >= r1:
-        st.success("ADD POSITION")
-    else:
-        st.info("WAIT")
-
-else:
-st.subheader("Market status")
-
-c1, c2, c3 = st.columns(3)
-c1.metric("Trend", "OK" if trend_ok else "Weak")
-c2.metric("MACD", "Golden" if macd_ok else "Negative")
-c3.metric("KDJ", "Golden" if kdj_ok else "Negative")
-
+#===== R calculation（先算好，兩邊都能用）=====
+r1 = r2 = r3 = None
 if entry_price > 0 and stop_price > 0 and entry_price != stop_price:
     risk_per_share = abs(entry_price - stop_price)
     r1 = entry_price + risk_per_share
     r2 = entry_price + risk_per_share * 2
     r3 = entry_price + risk_per_share * 3
+#==============================================
+if is_mobile:
+    st.markdown("## 📊 STATUS")
+    st.success("TREND OK") if trend_ok else st.error("NO TRADE")
 
-    st.subheader("R levels")
-    st.write("1R:", round(r1, 2))
-    st.write("2R:", round(r2, 2))
-    st.write("3R:", round(r3, 2))
+    if r1:
+        st.markdown("## 🎯 R LEVELS")
+        st.markdown(f"1R: {r1:.2f}")
+        st.markdown(f"2R: {r2:.2f}")
+        st.markdown(f"3R: {r3:.2f}")
+st.markdown("## 🧠 ACTION")
+        if not trend_ok:
+            st.error("NO TRADE")
+        elif current_price >= r3:
+            st.warning("REDUCE / TAKE PROFIT")
+        elif current_price >= r2:
+            st.info("MOVE STOP TO BREAKEVEN")
+        elif current_price >= r1:
+            st.success("ADD POSITION")
+        else:
+            st.info("WAIT")
 
-    st.subheader("Position management")
+else:
+    st.subheader("Market status")
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Trend", "OK" if trend_ok else "Weak")
+    c2.metric("MACD", "Golden" if macd_ok else "Negative")
+    c3.metric("KDJ", "Golden" if kdj_ok else "Negative")
 
-    if current_price >= r1 and trend_ok and macd_ok:
-        st.success("Price >= 1R: Add position allowed")
-    if current_price >= r2:
-        st.success("Price >= 2R: Move stop loss to breakeven")
-    if current_price >= r3:
-        st.success("Price >= 3R: Consider trailing stop or partial exit")
+    if r1:
+        st.subheader("R levels")
+        st.write("1R:", round(r1, 2))
+        st.write("2R:", round(r2, 2))
+        st.write("3R:", round(r3, 2))
 
-    if not trend_ok or not macd_ok:
-        st.warning("Trend weakening: avoid adding, consider reducing position")
+        st.subheader("Position management")
+        if current_price >= r1 and trend_ok and macd_ok:
+            st.success("Price >= 1R: Add position allowed")
+        if current_price >= r2:
+            st.success("Price >= 2R: Move stop loss to breakeven")
+        if current_price >= r3:
+            st.success("Price >= 3R: Consider trailing stop or partial exit")
+
+        if not trend_ok or not macd_ok:
+            st.warning("Trend weakening: avoid adding, consider reducing position")
 
 st.subheader("Trade log")
 
