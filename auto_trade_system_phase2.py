@@ -4,7 +4,7 @@ import numpy as np
 import datetime
 import yfinance as yf
 
-st.set_page_config(page_title="Trading Decision System - Phase 2", layout="wide")
+st.set_page_config(page_title="Trading Decision System - Phase 2")
 
 # ===== UI MODE SWITCH =====
 with st.sidebar:
@@ -19,13 +19,19 @@ is_mobile = ui_mode == "Mobile"
 
 st.title("Trading Decision System - Phase 2")
 
-ticker = st.sidebar.text_input("Ticker (e.g. AAPL or 2330.TW)", value="AAPL")
-capital = st.sidebar.number_input("Capital", value=120000, step=1000)
-risk_pct = st.sidebar.slider("Risk per trade (%)", 0.5, 5.0, 2.0) / 100
+with st.sidebar:
+    st.title("設定")
 
-entry_price = st.sidebar.number_input("Initial entry price", value=0.0)
-stop_price = st.sidebar.number_input("Stop loss price", value=0.0)
-current_price = st.sidebar.number_input("Current price", value=0.0)
+    ui_mode = st.radio("畫面模式", ["Mobile", "Desktop"], index=0)
+    ticker = st.text_input("Ticker (e.g. AAPL or 2330.TW)", value="AAPL")
+    capital = st.number_input("Capital", value=120000, step=1000)
+    risk_pct = st.slider("Risk per trade (%)", 0.5, 5.0, 2.0) / 100
+
+    entry_price = st.number_input("Initial entry price", value=0.0)
+    stop_price = st.number_input("Stop loss price", value=0.0)
+    current_price = st.number_input("Current price", value=0.0)
+
+is_mobile = ui_mode == "Mobile"
 
 @st.cache_data
 def load_data(ticker):
