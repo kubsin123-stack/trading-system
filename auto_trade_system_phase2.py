@@ -121,7 +121,7 @@ else:
 
 File "/mount/src/trading-system/auto_trade_system_phase2.py", line 125
   st.session_state.trades = []
-  ^
+
 IndentationError: expected an indented block after 'if' statement on line 124
 
 st.subheader("交易紀錄")
