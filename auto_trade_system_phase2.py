@@ -117,16 +117,16 @@ else:
 st.subheader("Trade log")
 
 if "trades" not in st.session_state:
-st.session_state.trades = []
+    st.session_state.trades = []
 
 if st.button("Add trade record"):
-st.session_state.trades.append({
-"Time": datetime.datetime.now(),
-"Entry": entry_price,
-"Stop": stop_price,
-"Current": current_price
+    st.session_state.trades.append({
+        "Time": datetime.datetime.now(),
+        "Entry": entry_price,
+        "Stop": stop_price,
+        "Current": current_price
 })
 
 if st.session_state.trades:
-df_log = pd.DataFrame(st.session_state.trades)
-st.dataframe(df_log)
+    df_log = pd.DataFrame(st.session_state.trades)
+    st.dataframe(df_log)
