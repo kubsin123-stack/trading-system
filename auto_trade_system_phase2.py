@@ -119,11 +119,6 @@ else:
         if not trend_ok or not macd_ok:
             st.warning("Trend weakening: avoid adding, consider reducing position")
 
-"/mount/src/trading-system/auto_trade_system_phase2.py", line 125
-  st.session_state.trades = []
-
-expected an indented block after 'if' statement on line 124
-
 st.subheader("交易紀錄")
 
 if "trades" not in st.session_state:
