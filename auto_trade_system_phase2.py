@@ -6,16 +6,23 @@ import yfinance as yf
 
 st.set_page_config(page_title="Trading Decision System - Phase 2")
 
-# ===== UI MODE SWITCH =====
+#===== UI MODE SWITCH (STABLE) =====
+if "ui_mode" not in st.session_state:
+    st.session_state.ui_mode = "Mobile"
+
 with st.sidebar:
     st.title("設定")
-    ui_mode = st.radio(
+
+    st.session_state.ui_mode = st.radio(
         "畫面模式",
         ["Mobile", "Desktop"],
-        index=0,  key="ui_mode"
+        index=0 if st.session_state.ui_mode == "Mobile" else 1,
+        key="ui_mode_radio"
     )
+
+ui_mode = st.session_state.ui_mode
 is_mobile = ui_mode == "Mobile"
-# =========================
+#================================
 
 st.title("Trading Decision System - Phase 2")
 
