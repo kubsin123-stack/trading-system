@@ -56,11 +56,12 @@ kdj_ok = float(latest["K"]) > float(latest["D"])
 
 # ===== R calculation =====
 r1 = r2 = r3 = None
+
 if entry_price > 0 and stop_price > 0 and entry_price != stop_price:
-risk_per_share = abs(entry_price - stop_price)
-r1 = entry_price + risk_per_share
-r2 = entry_price + risk_per_share * 2
-r3 = entry_price + risk_per_share * 3
+    risk_per_share = abs(entry_price - stop_price)
+    r1 = entry_price + risk_per_share
+    r2 = entry_price + risk_per_share * 2
+    r3 = entry_price + risk_per_share * 3
 # ========================
 
 if is_mobile:
