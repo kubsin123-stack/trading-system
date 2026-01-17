@@ -28,9 +28,9 @@ current_price = st.sidebar.number_input("Current price", value=0.0)
 
 @st.cache_data
 def load_data(ticker):
-df = yf.download(ticker, period="6mo", interval="1d")
-df.dropna(inplace=True)
-return df
+    df = yf.download(ticker, period="6mo", interval="1d")
+    df.dropna(inplace=True)
+    return df
 
 df = load_data(ticker)
 
