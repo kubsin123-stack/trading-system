@@ -6,7 +6,7 @@ import yfinance as yf
 
 st.set_page_config(page_title="Trading Decision System - Phase 2")
 
-#===== UI MODE SWITCH (STABLE) =====
+#===== SIDEBAR (STABLE & SINGLE) =====
 if "ui_mode" not in st.session_state:
     st.session_state.ui_mode = "Mobile"
 
@@ -20,9 +20,17 @@ with st.sidebar:
         key="ui_mode_radio"
     )
 
+    ticker = st.text_input("Ticker (e.g. AAPL or 2330.TW)", value="AAPL")
+    capital = st.number_input("Capital", value=120000, step=1000)
+    risk_pct = st.slider("Risk per trade (%)", 0.5, 5.0, 2.0) / 100
+
+    entry_price = st.number_input("Initial entry price", value=0.0)
+    stop_price = st.number_input("Stop loss price", value=0.0)
+    current_price = st.number_input("Current price", value=0.0)
+
 ui_mode = st.session_state.ui_mode
 is_mobile = ui_mode == "Mobile"
-#================================
+#===================================
 
 st.title("Trading Decision System - Phase 2")
 
