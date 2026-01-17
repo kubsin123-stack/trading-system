@@ -7,12 +7,13 @@ import yfinance as yf
 st.set_page_config(page_title="Trading Decision System - Phase 2", layout="wide")
 
 # ===== UI MODE SWITCH =====
-st.sidebar.title("UI Mode")
-ui_mode = st.sidebar.radio(
-"Choose mode",
-["Mobile", "Desktop"],
-index=0
-)
+with st.sidebar:
+    st.title("設定")
+    ui_mode = st.radio(
+        "畫面模式",
+        ["Mobile", "Desktop"],
+        index=0
+    )
 is_mobile = ui_mode == "Mobile"
 # =========================
 
@@ -32,7 +33,11 @@ def load_data(ticker):
     df.dropna(inplace=True)
     return df
 
-df = load_data(ticker)
+if "data_ticker" not in st.session_state or st.session_state.data_ticker != ticker:
+    st.session_state.df = load_data(ticker)
+    st.session_state.data_ticker = ticker
+
+df = st.session_state.df
 
 df["EMA21"] = df["Close"].ewm(span=21).mean()
 df["EMA55"] = df["Close"].ewm(span=55).mean()
@@ -117,16 +122,16 @@ else:
 st.subheader("Trade log")
 
 if "trades" not in st.session_state:
-    st.session_state.trades = []
+st.session_state.trades = []
 
 if st.button("Add trade record"):
-    st.session_state.trades.append({
-        "Time": datetime.datetime.now(),
-        "Entry": entry_price,
-        "Stop": stop_price,
-        "Current": current_price
+st.session_state.trades.append({
+"Time": datetime.datetime.now(),
+"Entry": entry_price,
+"Stop": stop_price,
+"Current": current_price
 })
 
 if st.session_state.trades:
-    df_log = pd.DataFrame(st.session_state.trades)
-    st.dataframe(df_log)
+df_log = pd.DataFrame(st.session_state.trades)
+st.dataframe(df_log)
