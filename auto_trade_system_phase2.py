@@ -119,19 +119,23 @@ else:
         if not trend_ok or not macd_ok:
             st.warning("Trend weakening: avoid adding, consider reducing position")
 
-st.subheader("Trade log")
+File "/mount/src/trading-system/auto_trade_system_phase2.py", line 125
+  st.session_state.trades = []
+  ^
+IndentationError: expected an indented block after 'if' statement on line 124
+st.subheader("交易紀錄")
 
 if "trades" not in st.session_state:
-st.session_state.trades = []
+    st.session_state.trades = []
 
-if st.button("Add trade record"):
-st.session_state.trades.append({
-"Time": datetime.datetime.now(),
-"Entry": entry_price,
-"Stop": stop_price,
-"Current": current_price
-})
+if st.button("新增交易紀錄"):
+    st.session_state.trades.append({
+        "Time": datetime.datetime.now(),
+        "Entry": entry_price,
+        "Stop": stop_price,
+        "Current": current_price
+    })
 
 if st.session_state.trades:
-df_log = pd.DataFrame(st.session_state.trades)
-st.dataframe(df_log)
+    df_log = pd.DataFrame(st.session_state.trades)
+    st.dataframe(df_log)
