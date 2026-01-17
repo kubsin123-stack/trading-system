@@ -90,28 +90,29 @@ if is_mobile:
             st.info("WAIT")
 
 else:
-st.subheader("Market status")
-c1, c2, c3 = st.columns(3)
-c1.metric("Trend", "OK" if trend_ok else "Weak")
-c2.metric("MACD", "Golden" if macd_ok else "Negative")
-c3.metric("KDJ", "Golden" if kdj_ok else "Negative")
+    st.subheader("Market status")
 
-if r1 is not None:
-st.subheader("R levels")
-st.write("1R:", round(r1, 2))
-st.write("2R:", round(r2, 2))
-st.write("3R:", round(r3, 2))
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Trend", "OK" if trend_ok else "Weak")
+    c2.metric("MACD", "Golden" if macd_ok else "Negative")
+    c3.metric("KDJ", "Golden" if kdj_ok else "Negative")
 
-st.subheader("Position management")
-if current_price >= r1 and trend_ok and macd_ok:
-st.success("Price >= 1R: Add position allowed")
-if current_price >= r2:
-st.success("Price >= 2R: Move stop loss to breakeven")
-if current_price >= r3:
-st.success("Price >= 3R: Consider trailing stop or partial exit")
+    if r1 is not None:
+        st.subheader("R levels")
+        st.write("1R:", round(r1, 2))
+        st.write("2R:", round(r2, 2))
+        st.write("3R:", round(r3, 2))
 
-if not trend_ok or not macd_ok:
-st.warning("Trend weakening: avoid adding, consider reducing position")
+        st.subheader("Position management")
+        if current_price >= r1 and trend_ok and macd_ok:
+            st.success("Price >= 1R: Add position allowed")
+        if current_price >= r2:
+            st.success("Price >= 2R: Move stop loss to breakeven")
+        if current_price >= r3:
+            st.success("Price >= 3R: Consider trailing stop or partial exit")
+
+        if not trend_ok or not macd_ok:
+            st.warning("Trend weakening: avoid adding, consider reducing position")
 
 st.subheader("Trade log")
 
