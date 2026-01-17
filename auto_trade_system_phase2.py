@@ -26,20 +26,6 @@ is_mobile = ui_mode == "Mobile"
 
 st.title("Trading Decision System - Phase 2")
 
-with st.sidebar:
-    st.title("設定")
-
-    ui_mode = st.radio("畫面模式", ["Mobile", "Desktop"], index=0)
-    ticker = st.text_input("Ticker (e.g. AAPL or 2330.TW)", value="AAPL")
-    capital = st.number_input("Capital", value=120000, step=1000)
-    risk_pct = st.slider("Risk per trade (%)", 0.5, 5.0, 2.0) / 100
-
-    entry_price = st.number_input("Initial entry price", value=0.0)
-    stop_price = st.number_input("Stop loss price", value=0.0)
-    current_price = st.number_input("Current price", value=0.0)
-
-is_mobile = ui_mode == "Mobile"
-
 @st.cache_data
 def load_data(ticker):
     df = yf.download(ticker, period="6mo", interval="1d")
