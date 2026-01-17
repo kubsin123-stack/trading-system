@@ -12,7 +12,7 @@ with st.sidebar:
     ui_mode = st.radio(
         "畫面模式",
         ["Mobile", "Desktop"],
-        index=0
+        index=0,  key="ui_mode"
     )
 is_mobile = ui_mode == "Mobile"
 # =========================
