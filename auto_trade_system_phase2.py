@@ -117,7 +117,10 @@ else:
 
         st.subheader("Position management")
         if current_price >= r1 and trend_ok and macd_ok:
-            st.success("Price >= 1R: Add position allowed")
+            if v2_status == "STRONG_HOLD":
+        st.success("Price >= 1R: Add position allowed (v2 confirmed)")
+        else:
+        st.info("Price >= 1R reached, but v2 does NOT allow adding")
         if current_price >= r2:
             st.success("Price >= 2R: Move stop loss to breakeven")
         if current_price >= r3:
@@ -125,6 +128,30 @@ else:
 
         if not trend_ok or not macd_ok:
             st.warning("Trend weakening: avoid adding, consider reducing position")
+#=====================
+#V2 POSITION STATUS
+#=====================
+st.subheader("🧠 V2 Position Status")
+
+if entry_price > 0:
+    v2_status = should_hold_position(
+        df_1h=df.rename(columns=str.lower),
+        entry_price=entry_price,
+        max_price_since_entry=df["High"].max(),
+        bars_since_entry=len(df)
+    )
+
+    if v2_status == "STRONG_HOLD":
+        st.success("STRONG_HOLD：趨勢健康，可續抱（是否加倉需 v3 判斷）")
+
+    elif v2_status == "HOLD":
+        st.info("HOLD：趨勢仍在，但開始疲勞，避免加倉")
+
+    elif v2_status == "WEAK_HOLD":
+        st.warning("WEAK_HOLD：利潤回吐過多，建議減碼或拉緊停利")
+
+    elif v2_status == "EXIT":
+        st.error("EXIT：趨勢失效，建議出場")   
 
 st.subheader("交易紀錄")
 
